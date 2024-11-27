@@ -1,0 +1,23 @@
+.sidebar {
+    min-height: 100vh;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.facturacion-section {
+    background: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.reportes-section {
+    background: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    margin-top: 20px;
+}
+
+canvas {
+    max-width: 100%;
+    height: auto;
+}

@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Gestión de Cobros - Muelle Pesquero</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="styles.css" rel="stylesheet">
+</head>
+<body>
+    <!-- Navbar principal -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="index.html">MuellePesca</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarMain">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarMain">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item"><a class="nav-link" href="index.html">Facturas</a></li>
+                    <li class="nav-item"><a class="nav-link active" href="cobros.html">Cobros</a></li>
+                    <li class="nav-item"><a class="nav-link" href="reportes.html">Reportes</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Contenido principal -->
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Sidebar -->
+            <div class="col-md-3 col-lg-2 d-md-block bg-light sidebar">
+                <div class="position-sticky pt-3">
+                    <ul class="nav flex-column">
+                        <li class="nav-item">
+                            <a class="nav-link" href="#pendientes">
+                                Cobros Pendientes
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#historial">
+                                Historial de Cobros
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#creditos">
+                                Gestión de Créditos
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Área de contenido -->
+            <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+                <!-- Resumen de Cobros -->
+                <div class="row mt-4">
+                    <div class="col-md-4">
+                        <div class="card text-white bg-primary">
+                            <div class="card-body">
+                                <h5 class="card-title">Total por Cobrar</h5>
+                                <h2 class="card-text">$45,680.00</h2>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card text-white bg-success">
+                            <div class="card-body">
+                                <h5 class="card-title">Cobrado este mes</h5>
+                                <h2 class="card-text">$28,350.00</h2>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card text-white bg-danger">
+                            <div class="card-body">
+                                <h5 class="card-title">Vencidos</h5>
+                                <h2 class="card-text">$12,430.00</h2>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tabla de Cobros Pendientes -->
+                <div class="mt-4">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h2>Cobros Pendientes</h2>
+                        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#nuevoCobro">
+                            Nuevo Cobro
+                        </button>
+                    </div>
+                    <div class="table-responsive mt-3">
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Factura #</th>
+                                    <th>Cliente</th>
+                                    <th>Monto</th>
+                                    <th>Fecha Emisión</th>
+                                    <th>Fecha Venc.</th>
+                                    <th>Estado</th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- Datos de prueba -->
+                                <tr>
+                                    <td>F001-128</td>
+                                    <td>Pescador S.A.</td>
+                                    <td>$2,500.00</td>
+                                    <td>2024-11-01</td>
+                                    <td>2024-12-01</td>
+                                    <td><span class="badge bg-warning">Pendiente</span></td>
+                                    <td>
+                                        <button class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#pagoModal">Cobrar</button>
+                                        <button class="btn btn-sm btn-info">Detalles</button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>F001-127</td>
+                                    <td>MarFood Inc.</td>
+                                    <td>$3,800.00</td>
+                                    <td>2024-10-15</td>
+                                    <td>2024-11-15</td>
+                                    <td><span class="badge bg-danger">Vencido</span></td>
+                                    <td>
+                                        <button class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#pagoModal">Cobrar</button>
+                                        <button class="btn btn-sm btn-info">Detalles</button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Gráficos de Análisis -->
+                <div class="row mt-4">
+                    <div class="col-md-6">
+                        <canvas id="cobranzasChart"></canvas>
+                    </div>
+                    <div class="col-md-6">
+                        <canvas id="tendenciasChart"></canvas>
+                    </div>
+                </div>
+                <!-- Historial de Cobros -->
+<div class="mt-4" id="historial">
+    <h2>Historial de Cobros</h2>
+    <div class="table-responsive mt-3">
+        <div class="mb-3">
+            <input type="text" class="form-control w-25 d-inline-block" placeholder="Buscar...">
+            <select class="form-select w-25 d-inline-block ms-2">
+                <option>Todos los períodos</option>
+                <option>Último mes</option>
+                <option>Últimos 3 meses</option>
+                <option>Último año</option>
+            </select>
+        </div>
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>ID Pago</th>
+                    <th>Factura #</th>
+                    <th>Cliente</th>
+                    <th>Monto</th>
+                    <th>Fecha Pago</th>
+                    <th>Método</th>
+                    <th>Estado</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>P001</td>
+                    <td>F001-125</td>
+                    <td>MarFood Inc.</td>
+                    <td>$1,800.00</td>
+                    <td>2024-11-20</td>
+                    <td>Transferencia</td>
+                    <td><span class="badge bg-success">Completado</span></td>
+                    <td>
+                        <button class="btn btn-sm btn-info">Ver Comprobante</button>
+                    </td>
+                </tr>
+                <tr>
+                    <td>P002</td>
+                    <td>F001-126</td>
+                    <td>Pescador S.A.</td>
+                    <td>$2,300.00</td>
+                    <td>2024-11-18</td>
+                    <td>Cheque</td>
+                    <td><span class="badge bg-success">Completado</span></td>
+                    <td>
+                        <button class="btn btn-sm btn-info">Ver Comprobante</button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Gestión de Créditos -->
+<div class="mt-4" id="creditos">
+    <div class="d-flex justify-content-between align-items-center">
+        <h2>Gestión de Créditos</h2>
+        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#nuevoCreditoModal">
+            Nuevo Crédito
+        </button>
+    </div>
+
+    <!-- Tarjetas de Resumen -->
+    <div class="row mt-3">
+        <div class="col-md-4">
+            <div class="card border-info">
+                <div class="card-body">
+                    <h5 class="card-title">Líneas de Crédito Activas</h5>
+                    <h3 class="card-text">8</h3>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card border-warning">
+                <div class="card-body">
+                    <h5 class="card-title">Crédito Total Otorgado</h5>
+                    <h3 class="card-text">$85,000.00</h3>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card border-success">
+                <div class="card-body">
+                    <h5 class="card-title">Disponible para Créditos</h5>
+                    <h3 class="card-text">$115,000.00</h3>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tabla de Créditos -->
+    <div class="table-responsive mt-3">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Cliente</th>
+                    <th>Límite de Crédito</th>
+                    <th>Crédito Usado</th>
+                    <th>Disponible</th>
+                    <th>Última Revisión</th>
+                    <th>Estado</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Pescador S.A.</td>
+                    <td>$25,000.00</td>
+                    <td>$15,000.00</td>
+                    <td>$10,000.00</td>
+                    <td>2024-11-01</td>
+                    <td><span class="badge bg-success">Activo</span></td>
+                    <td>
+                        <button class="btn btn-sm btn-warning">Editar</button>
+                        <button class="btn btn-sm btn-info">Detalles</button>
+                    </td>
+                </tr>
+                <tr>
+                    <td>MarFood Inc.</td>
+                    <td>$35,000.00</td>
+                    <td>$32,000.00</td>
+                    <td>$3,000.00</td>
+                    <td>2024-11-15</td>
+                    <td><span class="badge bg-warning">Límite Cercano</span></td>
+                    <td>
+                        <button class="btn btn-sm btn-warning">Editar</button>
+                        <button class="btn btn-sm btn-info">Detalles</button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Modal de Nuevo Crédito -->
+<div class="modal fade" id="nuevoCreditoModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Nuevo Crédito</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form id="creditoForm">
+                    <div class="mb-3">
+                        <label class="form-label">Cliente</label>
+                        <select class="form-select">
+                            <option>Seleccionar Cliente</option>
+                            <option>Pescador S.A.</option>
+                            <option>MarFood Inc.</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Límite de Crédito</label>
+                        <input type="number" class="form-control" step="1000">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Plazo (días)</label>
+                        <input type="number" class="form-control">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Observaciones</label>
+                        <textarea class="form-control"></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                <button type="button" class="btn btn-primary">Crear Crédito</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+            </main>
+        </div>
+    </div>
+
+    <!-- Modal de Pago -->
+    <div class="modal fade" id="pagoModal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Registrar Pago</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="pagoForm">
+                        <div class="mb-3">
+                            <label class="form-label">Método de Pago</label>
+                            <select class="form-select">
+                                <option>Efectivo</option>
+                                <option>Tarjeta de Crédito</option>
+                                <option>Transferencia Bancaria</option>
+                                <option>Cheque</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Monto a Pagar</label>
+                            <input type="number" class="form-control" step="0.01">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Fecha de Pago</label>
+                            <input type="date" class="form-control">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Comentarios</label>
+                            <textarea class="form-control"></textarea>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                    <button type="button" class="btn btn-primary">Procesar Pago</button>
+                </div>
+            </div>
+
+
+        </div>
+
+
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script type="module" src="cobros.js"></script>
+</body>
+</html>
